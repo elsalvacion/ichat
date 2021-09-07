@@ -53,7 +53,8 @@
 
 /* namespaces */
 .namespaces-section {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: none;
 }
 .namespaces-section .namespace {
   cursor: pointer;

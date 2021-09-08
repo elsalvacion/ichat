@@ -114,6 +114,11 @@ body {
   background-size: cover;
 }
 
+.allMessages {
+  height: 85%;
+  max-height: 90%;
+}
+
 .roomHeading {
   padding: 7px !important;
   font-size: 18px;

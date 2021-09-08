@@ -166,6 +166,10 @@ html {
   color: #9e9e9e !important;
 }
 
+.messaging-form {
+  z-index: 500;
+}
+
 .messaging-form input {
   width: 100%;
   border: 1px solid #ff8a80 !important;

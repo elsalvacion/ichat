@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let socket = null;
 
-  socket = io("https://i-chatapp.herokuapp.com");
+  socket = io("http://localhost:5000");
 
   socket.on("allNamespaces", (namespaces) => {
     namespaces.forEach((ns) => {
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // join default ns
     const defaultEndpoint = namespaces[0].endpoint;
 
-    socket = io(`https://i-chatapp.herokuapp.com${defaultEndpoint}`);
+    socket = io(`http://localhost:5000${defaultEndpoint}`);
 
     // now load default ns rooms and join
     const defaultNsRooms = namespaces[0].rooms;
@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
           socket.close();
         }
 
-        socket = io(`https://i-chatapp.herokuapp.com${endpoint}`);
+        socket = io(`http://localhost:5000${endpoint}`);
 
         messages.innerHTML = "";
 

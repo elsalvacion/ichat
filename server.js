@@ -57,10 +57,11 @@ namespaces.forEach((ns) => {
 
     nsSocket.on("joinRoom", (room) => {
       const nsRoom = Array.from(nsSocket.rooms)[1];
-      nsSocket.leave(nsRoom);
+      if (typeof nsRoom !== "undefined") nsSocket.leave(nsRoom);
+
       nsSocket.join(room);
 
-      // console.log("joined room " + room);
+      console.log("joined room " + room);
 
       // send room chat history back
       let history = null;

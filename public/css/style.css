@@ -28,6 +28,10 @@
   background: #f77d72;
 }
 
+body {
+  overflow-x: none !important;
+}
+
 .nav {
   height: 45px;
   display: flex;
@@ -104,18 +108,25 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 10px !important;
   background: url(../img/red1.jpg);
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
 }
 
+.roomHeading {
+  padding: 7px !important;
+  font-size: 18px;
+  margin-bottom: 10px !important;
+  background: white;
+  color: #b71c1c;
+}
 .messages {
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  padding: 10px !important;
 }
 .messages .message {
   background: #b71c1c;
@@ -159,4 +170,18 @@
 .messaging-form button {
   display: block !important;
   margin: auto !important;
+}
+
+/* mobile devices */
+
+@media (max-width: 768px) {
+  .messages .message {
+    max-width: 80% !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .messages .message {
+    max-width: 90% !important;
+  }
 }

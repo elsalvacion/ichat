@@ -5,9 +5,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const messages = document.querySelector(".messages");
 
-  const mainNs = io("http://localhost:5000");
+  let socket = null;
 
-  mainNs.on("allNamespaces", (namespaces) => {
+  socket = io("http://localhost:5000");
+
+  socket.on("allNamespaces", (namespaces) => {
     namespaces.forEach((ns) => {
       namespaces_section.innerHTML += `
       <div class="center namespace"  data-target="slide-out" data-title="${ns.title}" data-endpoint="${ns.endpoint}">
@@ -20,7 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // join default ns
     const defaultEndpoint = namespaces[0].endpoint;
-    const defaultNs = io(`http://localhost:5000${defaultEndpoint}`);
+
+    socket = io(`http://localhost:5000${defaultEndpoint}`);
 
     // now load default ns rooms and join
     const defaultNsRooms = namespaces[0].rooms;
@@ -33,9 +36,13 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    defaultNs.emit("joinRoom", defaultNsRooms[0].title);
+    socket.emit("joinRoom", defaultNsRooms[0].title);
 
-    defaultNs.on("history", (history) => {
+    document.querySelector(
+      ".roomHeading"
+    ).innerHTML = `${namespaces[0].title} #${defaultNsRooms[0].title}`;
+
+    socket.on("history", (history) => {
       history.forEach((msg) => {
         messages.innerHTML += `
         <div class="message">
@@ -53,13 +60,13 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector(".texting-form").addEventListener("submit", (e) => {
       e.preventDefault();
       if (messageInput.value !== "")
-        defaultNs.emit("messageFromClient", messageInput.value);
+        socket.emit("messageFromClient", messageInput.value);
 
       messageInput.value = "";
     });
 
     // get message from server
-    defaultNs.on("messageFromServer", (msg) => {
+    socket.on("messageFromServer", (msg) => {
       messages.innerHTML += `
       <div class="message">
       <div class="sender">${msg.sender}</div>
@@ -76,10 +83,14 @@ document.addEventListener("DOMContentLoaded", () => {
       room.addEventListener("click", (e) => {
         const title = room.getAttribute("data-title");
         // join this room
-        defaultNs.emit("joinRoom", title);
-        messages.innerHTML = "";
-        defaultNs.on("history", (history) => {
-          console.log(history);
+        socket.emit("joinRoom", title);
+
+        document.querySelector(
+          ".roomHeading"
+        ).innerHTML = `${namespaces[0].title} #${title}`;
+
+        socket.on("history", (history) => {
+          messages.innerHTML = "";
           history.forEach((msg) => {
             messages.innerHTML += `
                                       <div class="message">
@@ -102,11 +113,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const title = ns.getAttribute("data-title");
 
-        const newNs = io(`http://localhost:5000${endpoint}`);
+        if (socket) {
+          socket.close();
+        }
+
+        socket = io(`http://localhost:5000${endpoint}`);
 
         messages.innerHTML = "";
 
-        newNs.on("rooms", (rooms) => {
+        socket.on("rooms", (rooms) => {
+          // automatically join first room
+          // join this room
+          socket.emit("joinRoom", rooms[0].title);
+
+          document.querySelector(
+            ".roomHeading"
+          ).innerHTML = `${title} #${rooms[0].title}`;
+
           roomsSections.forEach((roomsSection) => {
             roomsSection.innerHTML = "";
             rooms.forEach((room) => {
@@ -114,47 +137,50 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="room" data-title="${room.title}">${room.title}</div>
               `;
             });
-          });
-        });
 
-        // now listen for a click in a selected room
-        Array.from(document.querySelectorAll(".room")).forEach((room) => {
-          room.addEventListener("click", (e) => {
-            const title = room.getAttribute("data-title");
-            // join this room
-            newNs.emit("joinRoom", title);
-            messages.innerHTML = "";
-            newNs.on("history", (history) => {
-              console.log(history);
-
-              history.forEach((msg) => {
-                messages.innerHTML += `
-                                        <div class="message">
-                                        <div class="sender">${msg.sender}</div>
-                                       <div class="text">
-                                         ${msg.text}
-                                       </div>
-                                        <div class="time">${msg.time}</div>
-                                      </div>
-                                        `;
+            // now listen for a click in a selected room
+            Array.from(document.querySelectorAll(".room")).forEach((room) => {
+              room.addEventListener("click", (e) => {
+                const title = room.getAttribute("data-title");
+                // join this room
+                socket.emit("joinRoom", title);
+                document.querySelector(
+                  ".roomHeading"
+                ).innerHTML = `${ns.title} #${title}`;
               });
+
+              socket.on("history", (history) => {
+                messages.innerHTML = "";
+
+                history.forEach((msg) => {
+                  messages.innerHTML += `
+                                      <div class="message">
+                                      <div class="sender">${msg.sender}</div>
+                                     <div class="text">
+                                       ${msg.text}
+                                     </div>
+                                      <div class="time">${msg.time}</div>
+                                    </div>
+                                      `;
+                });
+              });
+
+              // time send some messages
+              document
+                .querySelector(".texting-form")
+                .addEventListener("submit", (e) => {
+                  e.preventDefault();
+                  if (messageInput.value !== "")
+                    socket.emit("messageFromClient", messageInput.value);
+
+                  messageInput.value = "";
+                });
             });
           });
         });
 
-        // time send some messages
-        document
-          .querySelector(".texting-form")
-          .addEventListener("submit", (e) => {
-            e.preventDefault();
-            if (messageInput.value !== "")
-              newNs.emit("messageFromClient", messageInput.value);
-
-            messageInput.value = "";
-          });
-
         // get message from server
-        newNs.on("messageFromServer", (msg) => {
+        socket.on("messageFromServer", (msg) => {
           messages.innerHTML += `
       <div class="message">
       <div class="sender">${msg.sender}</div>

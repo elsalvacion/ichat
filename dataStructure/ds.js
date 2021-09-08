@@ -27,13 +27,7 @@ const namespaces = [
     rooms: [
       {
         title: "Chrome",
-        history: [
-          {
-            text: "Hey am here",
-            time: "16:14",
-            sender: "STEPS",
-          },
-        ],
+        history: [],
       },
       {
         title: "Firefox",

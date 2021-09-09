@@ -9,7 +9,7 @@ login.addEventListener("submit", (e) => {
     error.innerHTML = "Username is required";
   } else {
     window.location.replace(
-      `http://localhost:5000/pages/chat.html?username=${username.value}`
+      `https://i-chatapp.herokuapp.com/pages/chat.html?username=${username.value}`
     );
   }
 });

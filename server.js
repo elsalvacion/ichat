@@ -6,11 +6,12 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 const { Server } = require("socket.io");
 
-// config
-const connectDB = require("./config/db");
-
 // require and use config files
 require("dotenv").config({ path: "./config/.env" });
+
+// config
+// const connectDB = require("./config/db");
+
 // connectDB();
 
 // require other files
@@ -26,7 +27,6 @@ app.use(xss());
 app.use(hpp());
 
 // express body parser
-
 app.use(express.json());
 
 // static
@@ -51,8 +51,6 @@ io.on("connection", (socket) => {
 
 namespaces.forEach((ns) => {
   io.of(ns.endpoint).on("connection", (nsSocket) => {
-    console.log(`connected to ${ns.title}`);
-
     nsSocket.emit("rooms", ns.rooms);
 
     nsSocket.on("joinRoom", (room) => {
@@ -61,15 +59,11 @@ namespaces.forEach((ns) => {
 
       nsSocket.join(room);
 
-      console.log("joined room " + room);
-
       // send room chat history back
       let history = null;
       ns.rooms.forEach((nsRoom) => {
         if (nsRoom.title === room) return (history = nsRoom.history);
       });
-
-      // console.log(history);
 
       // // emit history to client
       nsSocket.emit("history", history);
@@ -80,11 +74,11 @@ namespaces.forEach((ns) => {
 
       const date = new Date();
       const time = date.toDateString() + " " + date.toLocaleTimeString();
-
       const msg = {
         text,
         time,
-        sender: "STEPS",
+        sender: nsSocket.handshake.query.username,
+        sck: nsSocket.id,
       };
       io.of(ns.endpoint).to(nsRoom).emit("messageFromServer", msg);
 
@@ -92,6 +86,11 @@ namespaces.forEach((ns) => {
       ns.rooms.forEach((room) => {
         if (room.title === nsRoom) room.history.push(msg);
       });
+    });
+
+    // if disconnect
+    nsSocket.on("disconnect", () => {
+      console.log(nsSocket.handshake.query.username);
     });
   });
 });

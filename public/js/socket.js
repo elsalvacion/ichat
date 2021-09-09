@@ -2,17 +2,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const namespaces_section = document.querySelector(".namespaces-section");
   const messageInput = document.querySelector("#message-input");
   const roomsSections = document.querySelectorAll(".rooms");
-
   const messages = document.querySelector(".messages");
+
+  // Get username and room from URL
+  const { username } = Qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+  });
 
   let socket = null;
 
-  socket = io("http://localhost:5000");
+  socket = io("https://i-chatapp.herokuapp.com", {
+    query: {
+      username,
+    },
+  });
 
   socket.on("allNamespaces", (namespaces) => {
     namespaces.forEach((ns) => {
       namespaces_section.innerHTML += `
-      <div class="center namespace"  data-target="slide-out" data-title="${ns.title}" data-endpoint="${ns.endpoint}">
+      <div class="center namespace"  data-target="slide-out" data-title="${ns.title}" data-endpoint="${ns.endpoint}"
+      data-position="right" data-tooltip="${ns.title}"
+      >
       <a class="btn-floating waves-effect waves-light ${ns.color}"
         ><i class="material-icons">${ns.icon}</i></a
       >
@@ -23,7 +33,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // join default ns
     const defaultEndpoint = namespaces[0].endpoint;
 
-    socket = io(`http://localhost:5000${defaultEndpoint}`);
+    socket = io(`https://i-chatapp.herokuapp.com${defaultEndpoint}`, {
+      query: {
+        username,
+      },
+    });
 
     // now load default ns rooms and join
     const defaultNsRooms = namespaces[0].rooms;
@@ -40,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelector(
       ".roomHeading"
-    ).innerHTML = `${namespaces[0].title} #${defaultNsRooms[0].title}`;
+    ).innerHTML = `#${defaultNsRooms[0].title}`;
 
     socket.on("history", (history) => {
       history.forEach((msg) => {
@@ -59,8 +73,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // time send some messages
     document.querySelector(".texting-form").addEventListener("submit", (e) => {
       e.preventDefault();
-      if (messageInput.value !== "")
+      if (messageInput.value !== "") {
         socket.emit("messageFromClient", messageInput.value);
+      }
 
       messageInput.value = "";
     });
@@ -68,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // get message from server
     socket.on("messageFromServer", (msg) => {
       messages.innerHTML += `
-      <div class="message">
+      <div class="message ${msg.sck === socket.id ? "to-right" : null}">
       <div class="sender">${msg.sender}</div>
      <div class="text">
        ${msg.text}
@@ -76,6 +91,8 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="time">${msg.time}</div>
     </div>
       `;
+
+      window.scrollTo(0, document.body.scrollHeight);
     });
 
     // now listen for a click in a selected room
@@ -85,9 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // join this room
         socket.emit("joinRoom", title);
 
-        document.querySelector(
-          ".roomHeading"
-        ).innerHTML = `${namespaces[0].title} #${title}`;
+        document.querySelector(".roomHeading").innerHTML = `#${title}`;
 
         socket.on("history", (history) => {
           messages.innerHTML = "";
@@ -117,7 +132,11 @@ document.addEventListener("DOMContentLoaded", () => {
           socket.close();
         }
 
-        socket = io(`http://localhost:5000${endpoint}`);
+        socket = io(`https://i-chatapp.herokuapp.com${endpoint}`, {
+          query: {
+            username,
+          },
+        });
 
         messages.innerHTML = "";
 
@@ -128,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           document.querySelector(
             ".roomHeading"
-          ).innerHTML = `${title} #${rooms[0].title}`;
+          ).innerHTML = `#${rooms[0].title}`;
 
           roomsSections.forEach((roomsSection) => {
             roomsSection.innerHTML = "";
@@ -144,9 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const title = room.getAttribute("data-title");
                 // join this room
                 socket.emit("joinRoom", title);
-                document.querySelector(
-                  ".roomHeading"
-                ).innerHTML = `${ns.title} #${title}`;
+                document.querySelector(".roomHeading").innerHTML = `#${title}`;
               });
 
               socket.on("history", (history) => {
@@ -182,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // get message from server
         socket.on("messageFromServer", (msg) => {
           messages.innerHTML += `
-      <div class="message">
+      <div class="message ${msg.sck === socket.id ? "to-right" : null}">
       <div class="sender">${msg.sender}</div>
      <div class="text">
        ${msg.text}
@@ -190,8 +207,19 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="time">${msg.time}</div>
     </div>
       `;
+          window.scrollTo(0, document.body.scrollHeight);
         });
       });
     });
   });
+});
+
+// for sidenav stuff
+$(document).ready(function () {
+  $(".sidenav").sidenav();
+});
+
+// tooltip
+$(document).ready(function () {
+  $(".tooltipped").tooltip();
 });

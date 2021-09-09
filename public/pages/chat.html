@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../css/materialize.min.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <div class="nav red lighten-1">
+      <a href="#">iChat</a>
+      <a
+        href="#"
+        data-target="slide-out"
+        class="sidenav-trigger hide-on-med-and-up"
+        ><i class="material-icons">menu</i></a
+      >
+    </div>
+
+    <!-- side nav for rooms on small screen -->
+    <ul id="slide-out" class="sidenav rooms-section sidenav-section">
+      <div>
+        <!-- rooms -->
+        <h4>Rooms <span class="material-icons"> meeting_room </span></h4>
+        <div class="rooms">
+          <!-- load from js -->
+        </div>
+      </div>
+
+    </ul>
+
+    <div class="row main">
+      <div class="col s2 m1 card z-depth-3 section namespaces-section">
+        <!-- Loaded from -->
+      </div>
+      <div class="col hide-on-small-only m3 card section rooms-section">
+        <!-- rooms -->
+        <div>
+          <h4>Rooms <span class="material-icons"> meeting_room </span></h4>
+          <div class="rooms">
+            <!-- load from js -->
+          </div>
+        </div>
+
+        </div>
+        <div class="col s10 m8 card section messaging-section">
+          <div class="allMessages">
+            <div class="z-depth-2 roomHeading">
+              <!-- From Javascript -->
+            </div>
+            <div class="messages">
+              <!-- load from server -->
+            </div>
+          </div>
+          <div class="messaging-form">
+            <div class="row">
+              <form class="col s12 texting-form">
+                <div class="row">
+                  <div class="col s11">
+                    <input
+                      placeholder="Type here"
+                      id="message-input"
+                      type="text"
+                    />
+                  </div>
+                  <div class="col s1">
+                    <button
+                      class="
+                        btn-floating
+                        waves-effect waves-light
+                        teal
+                        lighten-1
+                      "
+                      type="submit"
+                    >
+                      <i class="material-icons">send</i>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/materialize.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../js/qs.min.js" ></script>
+    <script src="../js/socket.js"></script>
+  </body>
+</html>

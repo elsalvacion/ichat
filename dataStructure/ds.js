@@ -1,41 +1,58 @@
 const namespaces = [
   {
-    title: "OS",
-    endpoint: "/os",
-    icon: "api",
-    color: "red",
-    rooms: [
-      {
-        title: "Windows",
-        history: [],
-      },
-      {
-        title: "Mac",
-        history: [],
-      },
-      {
-        title: "Linux",
-        history: [],
-      },
-    ],
-  },
-  {
-    title: "Browsers",
-    endpoint: "/browsers",
+    title: "General",
+    endpoint: "/general",
     icon: "public",
     color: "green",
     rooms: [
       {
-        title: "Chrome",
+        title: "CSE",
         history: [],
+        users: [],
       },
       {
-        title: "Firefox",
+        title: "EEE",
         history: [],
+        users: [],
       },
       {
-        title: "Edge",
+        title: "MCE",
         history: [],
+        users: [],
+      },
+      {
+        title: "TVE",
+        history: [],
+        users: [],
+      },
+    ],
+  },
+
+  {
+    title: "CSE",
+    endpoint: "/cse",
+    icon: "computer",
+    color: "blue",
+    rooms: [
+      {
+        title: "General",
+        history: [],
+        users: [],
+      },
+      {
+        title: "Coding",
+        history: [],
+        users: [],
+      },
+      {
+        title: "Networking",
+        history: [],
+        users: [],
+      },
+      {
+        title: "Hardware",
+        history: [],
+        users: [],
       },
     ],
   },

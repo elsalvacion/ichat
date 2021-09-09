@@ -1,0 +1,92 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+}
+
+body,
+html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f77d72;
+}
+
+.login {
+  width: 40%;
+  height: fit-content;
+  background: white;
+  color: black;
+  padding: 15px;
+  box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.login h2 {
+  font-size: 32px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.login #error {
+  color: #e53935;
+  margin: 7px 0;
+}
+
+.login input,
+select {
+  display: block;
+  padding: 7px;
+  font-size: 16px;
+  border: 1px solid #f77d72;
+  border-radius: 5px;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.login input:focus,
+select:focus {
+  outline: 0;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.login label {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 7px;
+}
+
+.login button {
+  background: #eb7369;
+  color: white;
+  font-size: 18px;
+  padding: 10px 25px;
+  border: 0;
+  cursor: pointer;
+}
+
+.login button:hover {
+  background: #e53935;
+}
+
+.login button:focus {
+  outline: 0;
+}
+
+/* media */
+@media (max-width: 800px) {
+  .login {
+    width: 60%;
+  }
+}
+
+@media (max-width: 600px) {
+  .login {
+    width: 80%;
+  }
+}
